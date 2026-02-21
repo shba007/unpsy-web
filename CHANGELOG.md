@@ -1,5 +1,17 @@
 # unpsy-web
 
+## v0.7.11
+
+[compare changes](https://github.com/Algostract/unpsy-web/compare/v0.7.10...v0.7.11)
+
+### 🚀 Enhancements
+
+- Refactor app layout and replace Splide with Keen Slider ([c95f065](https://github.com/Algostract/unpsy-web/commit/c95f065))
+
+### ❤️ Contributors
+
+- Shirsendu Bairagi ([@shba007](https://github.com/shba007))
+
 ## v0.7.10
 
 [compare changes](https://github.com/Algostract/unpsy-web/compare/v0.7.9...v0.7.10)
