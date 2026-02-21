@@ -1,5 +1,17 @@
 # unpsy-web
 
+## v0.7.9
+
+[compare changes](https://github.com/Algostract/unpsy-web/compare/v0.7.8...v0.7.9)
+
+### 💅 Refactors
+
+- Update docker-compose configuration and environment variables ([7b946b3](https://github.com/Algostract/unpsy-web/commit/7b946b3))
+
+### ❤️ Contributors
+
+- Shirsendu Bairagi ([@shba007](https://github.com/shba007))
+
 ## v0.7.8
 
 [compare changes](https://github.com/Algostract/unpsy-web/compare/v0.7.7...v0.7.8)
