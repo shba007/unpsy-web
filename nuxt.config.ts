@@ -30,6 +30,9 @@ export default defineNuxtConfig({
         base: './static',
       },
     },
+    experimental: {
+      tasks: true,
+    },
   },
   routeRules: {
     '/': { isr: 3600 },

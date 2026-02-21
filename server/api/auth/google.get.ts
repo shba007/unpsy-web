@@ -9,8 +9,8 @@ async function findOrCreateNotionUser(authUser: { sub: string; name: string; pic
   const config = useRuntimeConfig()
   const notionDbId = config.private.notionDbId as unknown as { user: string }
 
-  const query = await notion.databases.query({
-    database_id: notionDbId.user,
+  const query = await notion.dataSources.query({
+    data_source_id: notionDbId.user,
     filter: {
       property: 'Email',
       email: { equals: authUser.email },
@@ -47,7 +47,7 @@ async function findOrCreateNotionUser(authUser: { sub: string; name: string; pic
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data: any = await notion.pages.create({
-    parent: { database_id: notionDbId.user },
+    parent: { data_source_id: notionDbId.user },
     cover: {
       type: 'external',
       external: {

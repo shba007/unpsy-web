@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
     await notion.pages.create({
       parent: {
-        database_id: notionDbId.feedback,
+        data_source_id: notionDbId.feedback,
       },
       properties: {
         Id: {

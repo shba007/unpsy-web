@@ -2,6 +2,7 @@
 const title = `Psychological Assessment Toolkit`
 const description = `A psychoanalytical web tool for diverse assessments and automatic analysis with a built-in scanner. 
 It includes various assessments scales like EPQ, MACI, MCMI, TCI, JEPQ.`
+
 const {
   public: { siteUrl },
 } = useRuntimeConfig()
@@ -35,7 +36,6 @@ useSchemaOrg([
         Psychologist
       </h1>
       <h3 class="max-w-[34rem] text-base !leading-normal md:text-lg">The best way calculate scales, create and manage reports, track patients history and many more.</h3>
-
       <ButtonCTA title="Get Started" to="/dashboard" />
     </section>
     <section class="relative w-full flex-grow overflow-hidden md:h-screen">

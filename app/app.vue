@@ -2,7 +2,9 @@
 const title = `UnPsy - Psychological Assessment Toolkit`
 const description = `A psychoanalytical web tool for diverse assessments and automatic analysis with a built-in scanner. 
 It includes various assessments scales like EPQ, MACI, MCMI 3, TCI, JEPQ.`
+
 const {
+  app: { buildTime },
   public: { siteUrl },
 } = useRuntimeConfig()
 
@@ -37,8 +39,8 @@ useSeoMeta({
 
 useSchemaOrg([
   defineWebPage({
-    datePublished: new Date(2020, 6, 2).toISOString(),
-    dateModified: new Date().toISOString(),
+    datePublished: new Date(2021, 6, 21).toISOString(),
+    dateModified: buildTime,
     author: 'Shirsendu Bairagi',
   }),
   defineWebSite({

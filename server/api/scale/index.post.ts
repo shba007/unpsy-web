@@ -35,7 +35,7 @@ export default defineEventHandler<Promise<{ name: string; value: number }[]>>(as
     const formattedResult = Object.entries(result).map(([name, value]) => ({ name, value: value as number }))
 
     await notion.pages.create({
-      parent: { database_id: notionDbId.report },
+      parent: { data_source_id: notionDbId.report },
       properties: {
         Id: {
           type: 'title',
@@ -90,7 +90,9 @@ ${formattedResult.map((item) => `${item.name},${item.value}`).join('\n')}`,
   } catch (error: unknown) {
     console.error('API scale/index POST', error)
 
-    if ('cause' in error) throw error
+    if (error instanceof Error && 'statusCode' in error) {
+      throw error
+    }
 
     throw createError({ statusCode: 500, statusMessage: 'Some Unknown Error Found' })
   }

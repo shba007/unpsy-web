@@ -1,15 +1,13 @@
 version: '3.9'
 services:
   app:
-    image: ghcr.io/algostract/unpsy-web:latest
+    image: ghcr.io/shba007/unpsy-web:latest
+    env_file:
+      - .env
     volumes:
       - unpsy_static:/app/static
-    env_file:
-      - .env.prod
-    ports:
-      - 4202:3000
     networks:
-      - front-tier
+      - internal
     deploy:
       replicas: 1
       restart_policy:
@@ -18,8 +16,12 @@ services:
 
 volumes:
   unpsy_static:
-    external: true
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /root/unpsy/static
 
 networks:
-  front-tier:
+  internal:
     driver: overlay
