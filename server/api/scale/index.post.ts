@@ -10,6 +10,13 @@ export default defineEventHandler<Promise<{ name: string; value: number }[]>>(as
 
     const { user } = await requireUserSession(event)
 
+    // Verify User is a Active User
+    const notionUser = (await notion.pages.retrieve({
+      page_id: user.id,
+    })) as unknown as NotionUser
+    // else return Inactive Account
+    if (notionUser.properties.Status.status.name !== 'Active') throw createError({ statusCode: 402, statusMessage: 'Inactive Account' })
+
     const scales = await readYamlFile<Scale>('scales.yml')
 
     if (!scales) throw createError({ statusCode: 500, statusMessage: 'scales is undefined' })

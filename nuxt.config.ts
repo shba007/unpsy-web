@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt',
     '@vueuse/nuxt',
     'nuxt-auth-utils',
-    'nuxt-splide',
+    'nuxt-keen-slider',
   ],
   nitro: {
     compressPublicAssets: true,

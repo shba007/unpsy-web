@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Grid } from '@splidejs/splide-extension-grid'
-
 const title = `Dashboard`
 const description = `A psychoanalytical web tool for diverse assessments and automatic analysis with a built-in scanner. 
 It includes various assessments scales like EPQ, MACI, MCMI, TCI, JEPQ.`
@@ -32,55 +30,70 @@ useSchemaOrg([
   }),
 ])
 
-const splideOption = {
-  pagination: true,
-  arrows: true,
-  gap: '1rem',
-  padding: 0,
-  classes: {
-    pagination: 'pagination',
-    page: 'pagination-page',
-  },
-  grid: {
-    rows: 2,
-    cols: 1,
-    gap: {
-      row: '0.75rem',
-      col: '0.75rem',
-    },
-  },
-  mediaQuery: 'min',
-  breakpoints: {
-    768: {
-      grid: {
-        rows: 2,
-        cols: 2,
-      },
-    },
-    1280: {
-      grid: {
-        rows: 2,
-        cols: 3,
-      },
-    },
-  },
-}
-
-// pending, error,
+// ── Data ─────────────────────────────────────────────────────────────────────
 const { data: scales } = useFetch('/api/scale', { method: 'GET' })
 
+// ── Responsive grid chunking ──────────────────────────────────────────────────
+// Mirrors Splide grid: rows=2, cols=1/2/3 at 0/768/1280px
+const { width } = useWindowSize()
+
+const gridCols = computed(() => {
+  if (width.value >= 1280) return 3
+  if (width.value >= 768) return 2
+  return 1
+})
+
+const ROWS = 2
+const itemsPerSlide = computed(() => ROWS * gridCols.value)
+
+const chunkedScales = computed(() => {
+  const items = scales.value ?? []
+  const size = itemsPerSlide.value
+  const chunks: (typeof items)[] = []
+  for (let i = 0; i < items.length; i += size) {
+    chunks.push(items.slice(i, i + size))
+  }
+  return chunks
+})
+
+// ── Keen Slider ───────────────────────────────────────────────────────────────
+const currentSlide = ref(0)
+const totalSlides = computed(() => chunkedScales.value.length)
+
+const [sliderRef, slider] = useKeenSlider({
+  initial: 0,
+  slideChanged(s) {
+    currentSlide.value = s.track.details.rel
+  },
+})
+
+// Re-initialise slider when the number of chunks changes (breakpoint resize)
+watch(chunkedScales, async () => {
+  await nextTick()
+  currentSlide.value = 0
+  slider.value?.update({}, 0)
+})
+
+const prev = () => slider.value?.prev()
+const next = () => slider.value?.next()
+const goTo = (idx: number) => slider.value?.moveToIdx(idx)
+
+// ── Scale modal state ─────────────────────────────────────────────────────────
 const selectedScaleName = ref<string | null>(null)
 const selectedScale = computed(() => (selectedScaleName.value ? scales.value?.find(({ name }) => name === selectedScaleName.value) : undefined))
-
 const openedModel = ref<'scale' | 'payment' | 'feedback' | null>(null)
 </script>
 
 <template>
   <section class="relative flex flex-col">
-    <Splide :options="splideOption" tag="div" :has-track="false" :extensions="{ Grid }">
-      <SplideTrack class="py-2">
-        <SplideSlide v-for="{ name, type, count, subScales, updatedAt, publishedAt } in scales" :key="name">
+    <!-- Slider track -->
+    <div ref="sliderRef" class="keen-slider py-2">
+      <div v-for="(chunk, chunkIdx) in chunkedScales" :key="chunkIdx" class="keen-slider__slide">
+        <!-- CSS grid replicates the Splide rows×cols layout -->
+        <div class="grid gap-3" :style="{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }">
           <CardScale
+            v-for="{ name, type, count, subScales, updatedAt, publishedAt } in chunk"
+            :key="name"
             :name="name"
             :type="type"
             :count="count"
@@ -99,17 +112,34 @@ const openedModel = ref<'scale' | 'payment' | 'feedback' | null>(null)
                 openedModel = 'payment'
               }
             " />
-        </SplideSlide>
-      </SplideTrack>
-      <div class="splide__arrows ml-auto mt-4 flex w-16 justify-between bg-alert-600">
-        <button class="splide__arrow splide__arrow--prev">
-          <NuxtIcon name="local:chevron-bold" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls: arrows + pagination -->
+    <div class="mt-4 flex items-center justify-between">
+      <!-- Pagination dots -->
+      <ul class="flex gap-1">
+        <li v-for="(_, idx) in chunkedScales" :key="idx" class="flex items-center">
+          <button
+            :class="['rounded-full transition-all duration-300', idx === currentSlide ? 'h-[10px] w-[10px] bg-primary-500' : 'h-[6px] w-[6px] bg-white']"
+            :aria-label="`Go to slide ${idx + 1}`"
+            @click="goTo(idx)" />
+        </li>
+      </ul>
+
+      <!-- Prev / Next arrows -->
+      <div class="ml-auto flex w-16 justify-between">
+        <button class="disabled:opacity-40" :disabled="currentSlide === 0" aria-label="Previous" @click="prev">
+          <NuxtIcon name="local:chevron-bold" class="rotate-180" />
         </button>
-        <button class="splide__arrow splide__arrow--next relative">
+        <button class="disabled:opacity-40" :disabled="currentSlide === totalSlides - 1" aria-label="Next" @click="next">
           <NuxtIcon name="local:chevron-bold" />
         </button>
       </div>
-    </Splide>
+    </div>
+
+    <!-- Scale modal -->
     <ModalScale
       v-if="openedModel === 'scale' && selectedScale"
       :is-open="openedModel === 'scale'"
@@ -125,21 +155,3 @@ const openedModel = ref<'scale' | 'payment' | 'feedback' | null>(null)
       " />
   </section>
 </template>
-
-<style scoped>
-/* :deep(.pagination) {
-  @apply absolute bottom-1 right-6 flex h-[10px] gap-1;
-}
-
-:deep(.pagination)>li {
-  @apply flex items-center justify-center;
-}
-
-:deep(.pagination-page) {
-  @apply h-[6px] w-[6px] rounded-full bg-white transition-colors duration-300;
-}
-
-:deep(.pagination-page.is-active) {
-  @apply h-[10px] w-[10px] bg-primary-500;
-} */
-</style>
