@@ -32,12 +32,13 @@ export default defineEventHandler<Promise<{ name: string; value: number }[]>>(as
     }
 
     // Calculate
-    if (scale.type === 'binary')
+    if (scale.type === 'binary') {
       result = BinaryCalculate(
         scaleName,
         data.map(({ index, value }) => ({ index, value: !!value }))
       )
-    else if (scale.type === 'pentanary') result = PentanaryCalculate(scaleName, data)
+      console.log({ result })
+    } else if (scale.type === 'pentanary') result = PentanaryCalculate(scaleName, data)
 
     const formattedResult = Object.entries(result).map(([name, value]) => ({ name, value: value as number }))
 

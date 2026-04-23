@@ -1,7 +1,7 @@
 import MACI from './MACI'
 import MACIData from './MACI.data'
-import MCMI from './MCMI'
-import MCMIData from './MCMI.data'
+import MCMI3 from './MCMI3'
+import MCMI3Data from './MCMI3.data'
 import MMPIRF from './MMPI-RF'
 import MMPIRFData from './MMPI-RF.data'
 import TCI from './TCI'
@@ -26,7 +26,7 @@ import DSMDAData from './DSMD-A.data'
 // import LEYTONData from './LEYTON.data';
 
 const Scales = {
-  MCMI,
+  'MCMI-3': MCMI3,
   MACI,
   'MMPI-RF': MMPIRF,
   TCI,
@@ -40,7 +40,7 @@ const Scales = {
   'DSMD-A': DSMDA,
 } as const
 const Data = {
-  MCMI: MCMIData,
+  MCMI3: MCMI3Data,
   MACI: MACIData,
   'MMPI-RF': MMPIRFData,
   TCI: TCIData,
