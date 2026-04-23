@@ -1,5 +1,17 @@
 # unpsy-web
 
+## v0.7.12
+
+[compare changes](https://github.com/Algostract/unpsy-web/compare/v0.7.11...v0.7.12)
+
+### 🏡 Chore
+
+- Update dependencies and package manager version ([81f0395](https://github.com/Algostract/unpsy-web/commit/81f0395))
+
+### ❤️ Contributors
+
+- Shirsendu Bairagi ([@shba007](https://github.com/shba007))
+
 ## v0.7.11
 
 [compare changes](https://github.com/Algostract/unpsy-web/compare/v0.7.10...v0.7.11)
